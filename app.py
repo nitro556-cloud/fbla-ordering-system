@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, flash
-#from data import 
-#from logic import 
+from data import menu
+from logic import search_menu
 
 app = Flask(__name__)
 app.secret_key = "fbla-demo"
@@ -31,3 +31,4 @@ def contact_page():
     return render_template("contact.html")
 
 
+app.run(debug=True)
