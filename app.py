@@ -6,7 +6,6 @@ app = Flask(__name__)
 app.secret_key = "fbla-demo"
 
 @app.route("/")
-
 def home():
     return render_template("index.html")
 

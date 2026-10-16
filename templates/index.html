@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rendezvous Cafe | Online Ordering</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="script.js" defer></script>
 </head>
 <body>
     <!-- Header / Navbar -->
     <header>
-        <img id ="logo" src="./images/logo.png" alt="logo">
+        <img id ="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
         <nav id = "navigation_bar">
         <ul>
             <li><a href="#">Menu</a></li>
@@ -33,7 +33,7 @@
                     <a href="#" class="order-now-btn">Order Now</a>
                 </div>
                 <div class="hero-image-holder">
-                    <img src="./images/hero-image.png" alt="Hero" class="hero-image">
+                    <img src="{{ url_for('static', filename='./images/hero-image.png') }}" alt="Hero" class="hero-image">
                 </div>
             </div>
         </section>
@@ -41,3 +41,4 @@
     
 </body>
 </html>
+                    <img src="./images/hero-image.png" alt="Hero" class="hero-image">
