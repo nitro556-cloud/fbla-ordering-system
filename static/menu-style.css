@@ -177,7 +177,7 @@ section h2 {
 .menu-item p:last-child {
     color: #C48A5A;
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 500;
 }
 
 @media (max-width: 800px) {
