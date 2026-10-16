@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='menu-style.css') }}">
     <title>Rendezvous Cafe | Menu</title>
 </head>
 <body>
@@ -13,13 +15,57 @@
         <ul>
             <li><a href="{{ url_for('home') }}">Home</a></li>
             <li><a href="{{ url_for('cart_page') }}">Ordering</a></li>
-            <li><a href="{{ url_for('contact_page') }}">Contact</a></li>
+            <li><a href="#">Our Story</a></li>
         </ul>
         </nav>
-    <a href="#" id="contact-btn">Contact</a>
     </header>
-    <h1>hello</h1>
-    <a href="{{ url_for('home') }}">Home</a>
-    <h1>Our Menu</h1>
+
+
+<!-- Page Title -->
+<section class="page-header">
+    <h1 class="page-title">Our Menu</h1>
+    <p class="page-description">Explore our drinks and food, made for your next cafe visit.</p>
+</section>
+
+<!-- Search Bar -->
+<section class="search-bar">
+    <form action="{{ url_for('menu_page') }}" method="get">
+        <input
+            type="search"
+            name="q"
+            placeholder="Search for a menu item..."
+            value="{{ query }}"
+        >
+        <button type="submit">Search</button>
+    </form>
+</section>
+
+<!-- Category Grouping -->
+<section>
+    <h2>Browse Categories</h2>
+
+    <nav aria-label="Menu categories">
+        <a href="{{ url_for('menu_page') }}">All Items</a>
+        <a href="{{ url_for('menu_page', q='Drinks') }}">Drinks</a>
+        <a href="{{ url_for('menu_page', q='Food') }}">Food</a>
+    </nav>
+</section>
+
+<!-- Menu Items -->
+<section>
+    <h2>Our Items</h2>
+
+    <div class="menu-grid">
+        {% for item in menu %}
+            <article class="menu-item">
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.category }}</p>
+                <p>${{ "%.2f"|format(item.price) }}</p>
+            </article>
+        {% else %}
+            <p>No items found. Try another search.</p>
+        {% endfor %}
+    </div>
+</section>
 </body>
 </html>
