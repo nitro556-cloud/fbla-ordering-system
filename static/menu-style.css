@@ -1,5 +1,4 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 * {
     box-sizing: border-box;
@@ -7,34 +6,53 @@
     padding: 0;
 }
 
-section {
-    padding: 20px 10%;
+body {
+    background-color: #F7F2E9;
+    color: #2F4F4A;
+    font-family: "Inter", sans-serif;
 }
-.page-title {
-    margin-top:40px;
+
+h1, h2, h3, .title, .subtitle {
+    font-family: "Fraunces", serif;
 }
-.page-description {
-    margin-top: 10px;
-    margin-bottom: 0px;
-    font-size: 18px;
-    color: #46564F;
-}
-.search-bar {
-    margin-bottom: 0px;
-}
+
 li, a, button, input {
-    font-family: "Montserrat", sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 500;
     font-size: 16px;
     text-decoration: none;
 }
 
-/* Menu Page Styling */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10%;
+    background-color: #F7F2E9;
+}
 
-body {
-    background-color: #E9EDE6;
-    color: #29443D;
-    font-family: "Montserrat", sans-serif;
+#logo {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}
+
+#navigation_bar {
+    list-style: none;
+}
+
+#navigation_bar li {
+    display: inline-block;
+    padding: 0 20px;
+}
+
+#navigation_bar li a {
+    color: #2F4F4A;
+    transition: all 0.3s ease;
+}
+
+#navigation_bar li a:hover {
+    color: #C48A5A;
 }
 
 main {
@@ -42,65 +60,62 @@ main {
 }
 
 section {
+    padding: 20px 10%;
     margin-bottom: 40px;
 }
 
-/* Title Styling */
-
-section h1 {
-    color: #29443D;
+.page-title {
+    margin-top: 40px;
+    color: #2F4F4A;
     font-size: 48px;
     font-weight: 700;
     margin-bottom: 15px;
 }
 
-section h2 {
-    color: #29443D;
-    font-size: 25px;
-    margin-bottom: 20px;
+.page-description {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    font-size: 18px;
+    color: #2F4F4A;
 }
 
-section p {
-    color: #46564F;
-    line-height: 1.7;
+.search-bar {
+    margin-bottom: 0px;
 }
-
-/* Search Bar Styling */
 
 form {
     display: flex;
     gap: 12px;
 }
 
-input[type="search"] {
+input[type="text"] {
     width: 100%;
     max-width: 600px;
     padding: 15px 20px;
-    background-color: #F7F5EF;
-    border: 1px solid #C9D5CC;
+    background-color: #FFFDF8;
+    border: 1px solid #6B9E92;
     border-radius: 50px;
     outline: none;
+    color: #2F4F4A;
 }
 
-input[type="search"]:focus {
-    border-color: #729B93;
+input[type="text"]:focus {
+    border-color: #C48A5A;
 }
 
 button {
     padding: 15px 25px;
-    background-color: #729B93;
+    background-color: #6B9E92;
     border: none;
     border-radius: 50px;
-    color: white;
+    color: #FFFDF8;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 button:hover {
-    background-color: rgba(114, 155, 147, 0.8);
+    background-color: #2F4F4A;
 }
-
-/* Category Styling */
 
 nav[aria-label="Menu categories"] {
     display: flex;
@@ -110,19 +125,23 @@ nav[aria-label="Menu categories"] {
 
 nav[aria-label="Menu categories"] a {
     padding: 10px 24px;
-    background-color: #F7F5EF;
-    border: 1px solid #729B93;
+    background-color: #FFFDF8;
+    border: 1px solid #6B9E92;
     border-radius: 50px;
-    color: #29443D;
+    color: #2F4F4A;
     transition: all 0.3s ease;
 }
 
 nav[aria-label="Menu categories"] a:hover {
-    background-color: #729B93;
-    color: white;
+    background-color: #6B9E92;
+    color: #FFFDF8;
 }
 
-/* Menu Items Styling */
+section h2 {
+    color: #2F4F4A;
+    font-size: 25px;
+    margin-bottom: 20px;
+}
 
 .menu-grid {
     display: grid;
@@ -132,36 +151,34 @@ nav[aria-label="Menu categories"] a:hover {
 
 .menu-item {
     padding: 25px;
-    background-color: #F7F5EF;
-    border: 1px solid #DCE3DA;
+    background-color: #FFFDF8;
+    border: 1px solid #6B9E92;
     border-radius: 20px;
     transition: all 0.3s ease;
 }
 
 .menu-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(41, 68, 61, 0.12);
+    box-shadow: 0 8px 24px rgba(47, 79, 74, 0.15);
 }
 
 .menu-item h3 {
-    color: #29443D;
+    color: #2F4F4A;
     font-size: 20px;
     margin-bottom: 10px;
 }
 
 .menu-item p {
-    color: #46564F;
+    color: #2F4F4A;
     font-size: 14px;
     margin-bottom: 8px;
 }
 
 .menu-item p:last-child {
-    color: #3F655B;
+    color: #C48A5A;
     font-size: 20px;
     font-weight: 700;
 }
-
-/* Responsive Styling */
 
 @media (max-width: 800px) {
     .menu-grid {
@@ -174,7 +191,7 @@ nav[aria-label="Menu categories"] a:hover {
         padding: 35px 5%;
     }
 
-    section h1 {
+    .page-title {
         font-size: 36px;
     }
 
