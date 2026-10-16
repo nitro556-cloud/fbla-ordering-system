@@ -1,10 +1,12 @@
-<h1>Menu test</h1>
-
-<form action="/menu" method="get">
-  <input type="text" name="q" value="{{ query }}" placeholder="Search...">
-  <button type="submit">Search</button>
-</form>
-
-{% for item in menu %}
-  <p>{{ item.name }} - ${{ item.price }} - {{ item.category }} - stock: {{ item.stock }}</p>
-{% endfor %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendezvous Cafe | Menu</title>
+</head>
+<body>
+    <a href="{{ url_for('home') }}">Home</a>
+    <h1>Our Menu</h1>
+</body>
+</html>

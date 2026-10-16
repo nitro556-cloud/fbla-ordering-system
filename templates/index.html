@@ -14,9 +14,9 @@
         <img id ="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
         <nav id = "navigation_bar">
         <ul>
-            <li><a href="#">Menu</a></li>
-            <li><a href="#">Ordering</a></li>
-            <li><a href="#">Our Story</a></li>
+            <li><a href="{{ url_for('/menu') }}">Menu</a></li>
+            <li><a href="{{ url_for('cart_page') }}">Ordering</a></li>
+            <li><a href="{{ url_for('contact_page') }}">Contact</a></li>
         </ul>
         </nav>
     <a href="#" id="contact-btn">Contact</a>
@@ -38,7 +38,5 @@
             </div>
         </section>
     </main>
-    
 </body>
 </html>
-                    <img src="./images/hero-image.png" alt="Hero" class="hero-image">
