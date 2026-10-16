@@ -7,5 +7,5 @@ menu = [
     {"id":6, "name":"Blueberry Muffin", "category":"Food" , "price": 5.50, "stock":20},
     {"id":7, "name":"Croissant", "category":"Food" , "price": 5.59, "stock":20},
     {"id":8, "name":"Caesar Salad", "category":"Food" , "price": 7.99, "stock":20},
-    {"id":9, "name":"Cinnamon Rolls ", "category":"Food" , "price": 4.39, "stock":20}
+    {"id":9, "name":"Cinnamon Rolls", "category":"Food" , "price": 4.39, "stock":20}
     ]
