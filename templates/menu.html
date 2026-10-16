@@ -6,7 +6,19 @@
     <title>Rendezvous Cafe | Menu</title>
 </head>
 <body>
-    <a href="{{ url_for('home') }}">Home</a>
+      <!-- Header / Navbar -->
+    <header>
+        <img id ="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
+        <nav id = "navigation_bar">
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('cart_page') }}">Ordering</a></li>
+            <li><a href="{{ url_for('contact_page') }}">Contact</a></li>
+        </ul>
+        </nav>
+    <a href="#" id="contact-btn">Contact</a>
+    </header>
+    <h1>hello</h1>
     <h1>Our Menu</h1>
 </body>
 </html>
