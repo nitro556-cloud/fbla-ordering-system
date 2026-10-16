@@ -6,7 +6,7 @@ def search_menu(query):
         return menu
     results = []
     for item in menu:
-        if query in item["name"].lower or query in item["catergory"].lower():
+        if query in item["name"].lower() or query in item["category"].lower():
            results.append(item) 
     return results
 

@@ -12,7 +12,7 @@ def home():
 @app.route("/menu")
 def menu_page():
     query = request.args.get("q","")
-    return render_template("menu.html", menu = search_menu(query))
+    return render_template("menu.html", menu = search_menu(query), query=query)
 
 @app.route("/cart")
 def cart_page():
