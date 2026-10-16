@@ -9,3 +9,7 @@ menu = [
     {"id":8, "name":"Caesar Salad", "category":"Food" , "price": 7.99, "stock":20},
     {"id":9, "name":"Cinnamon Rolls ", "category":"Food" , "price": 4.39, "stock":20}
     ]
+
+
+cart = []
+orders = []
