@@ -12,7 +12,7 @@ body {
     font-family: "Inter", sans-serif;
 }
 
-h1, h2, h3, .title, .subtitle {
+h1, h2, h3, .title, .subtitle  p {
     font-family: "Fraunces", serif;
 }
 
@@ -56,31 +56,37 @@ header {
 }
 
 main {
-    padding: 60px 10%;
+    padding: 40px 10%;
 }
 
 section {
     padding: 20px 10%;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
+}
+
+.page-header {
+    padding-top: 24px;
+    padding-bottom: 0;
 }
 
 .page-title {
-    margin-top: 40px;
+    margin-top: 0;
     color: #2F4F4A;
     font-size: 48px;
     font-weight: 700;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .page-description {
-    margin-top: 10px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
     font-size: 18px;
     color: #2F4F4A;
+    line-height: 1.6;
 }
 
 .search-bar {
-    margin-bottom: 0px;
+    margin-bottom: 12px;
 }
 
 form {
@@ -91,7 +97,7 @@ form {
 input[type="text"] {
     width: 100%;
     max-width: 600px;
-    padding: 15px 20px;
+    padding: 14px 20px;
     background-color: #FFFDF8;
     border: 1px solid #6B9E92;
     border-radius: 50px;
@@ -104,7 +110,7 @@ input[type="text"]:focus {
 }
 
 button {
-    padding: 15px 25px;
+    padding: 14px 24px;
     background-color: #6B9E92;
     border: none;
     border-radius: 50px;
@@ -120,11 +126,11 @@ button:hover {
 nav[aria-label="Menu categories"] {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
 }
 
 nav[aria-label="Menu categories"] a {
-    padding: 10px 24px;
+    padding: 10px 22px;
     background-color: #FFFDF8;
     border: 1px solid #6B9E92;
     border-radius: 50px;
@@ -140,17 +146,17 @@ nav[aria-label="Menu categories"] a:hover {
 section h2 {
     color: #2F4F4A;
     font-size: 25px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    gap: 24px;
 }
 
 .menu-item {
-    padding: 25px;
+    padding: 22px;
     background-color: #FFFDF8;
     border: 1px solid #6B9E92;
     border-radius: 20px;
@@ -158,8 +164,8 @@ section h2 {
 }
 
 .menu-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(47, 79, 74, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(47, 79, 74, 0.12);
 }
 
 .menu-item h3 {
@@ -174,32 +180,34 @@ section h2 {
     margin-bottom: 8px;
 }
 
-.menu-item p:last-child {
+.menu-item p:last-of-type {
     color: #C48A5A;
     font-size: 20px;
     font-weight: 500;
+}
+
+.add-to-cart {
+    margin-top: 10px;
+    width: 100%;
 }
 
 @media (max-width: 800px) {
     .menu-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    header {
+        padding: 10px 5%;
+    }
+
+    #navigation_bar li {
+        padding: 0 10px;
+    }
 }
 
 @media (max-width: 550px) {
-    main {
-        padding: 35px 5%;
-    }
-
-    .page-title {
-        font-size: 36px;
-    }
-
-    .menu-grid {
-        grid-template-columns: 1fr;
-    }
-
-    form {
-        flex-direction: column;
+    section {
+        padding: 16px 5%;
+        margin-bottom: 18px;
     }
 }

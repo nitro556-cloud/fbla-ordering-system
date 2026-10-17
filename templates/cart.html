@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendezvous Cafe | My Order</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cart-style.css') }}">
+</head>
+<body>
+    <header>
+        <img id="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
+        <nav id="navigation_bar">
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('menu_page') }}">Ordering</a></li>
+                <li><a href="#">Our Story</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="page-header">
+        <h1 class="page-title">Your Order</h1>
+        <p class="page-description">Review your order and make any necessary changes before checkout.</p>
+    </section>
+
+    <main class="cart-container">
+        <!-- Left Column: Delivery & Fulfillment Info -->
+        <section class="delivery-section">
+            <div class="info-card">
+                <h2>Fulfillment Options</h2>
+                
+                <div class="fulfillment-type">
+                    <label class="radio-card active">
+                        <input type="radio" name="fulfillment" value="pickup" checked>
+                        <div>
+                            <strong>Store Pickup</strong>
+                            <p>Ready in 15–20 mins at Rendezvous Cafe</p>
+                        </div>
+                    </label>
+                    
+                    <label class="radio-card">
+                        <input type="radio" name="fulfillment" value="delivery">
+                        <div>
+                            <strong>Local Delivery</strong>
+                            <p>Delivered fresh to your doorstep ($3.99 fee)</p>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="delivery-details">
+                    <h3>Pickup Location</h3>
+                    <p>📍 123 Cafe Street, Downtown</p>
+                    <p>⏱️ Estimated Prep Time: <strong>15 minutes</strong></p>
+                </div>
+
+                <div class="special-instructions">
+                    <label for="instructions">Special Instructions or Allergy Notes</label>
+                    <textarea id="instructions" placeholder="e.g., Extra hot, oat milk preferred, call on arrival..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Order Summary Card -->
+        <section class="summary-section">
+            {% if cart_items %}
+                <div class="order-summary-card">
+                    <h2>Order Summary</h2>
+
+                    <!-- Items Loop -->
+                    {% for item in cart_items %}
+                        <div class="cart-item-row">
+                            <div class="item-img-wrapper">
+                                <img src="{{ url_for('static', filename='images/' + (item.image if item.image else 'hero-image.png')) }}" alt="{{ item.name }}">
+                                <span class="item-qty-badge">{{ item.quantity }}</span>
+                            </div>
+
+                            <div class="item-details">
+                                <h3>{{ item.name }}</h3>
+                                
+                                <form action="{{ url_for('update_cart') }}" method="POST" class="qty-form">
+                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <label for="qty-{{ item.id }}">Qty</label>
+                                    <input type="number" id="qty-{{ item.id }}" name="quantity" value="{{ item.quantity }}" min="1" required>
+                                    <button type="submit" class="btn-update">Update</button>
+                                </form>
+
+                                <form action="{{ url_for('remove_from_cart') }}" method="POST" class="remove-form">
+                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <button type="submit" class="btn-remove">Remove</button>
+                                </form>
+                            </div>
+
+                            <div class="item-price">${{ "%.2f"|format(item.price * item.quantity) }}</div>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Promo Code -->
+                    <div class="discount-section">
+                        <label for="discount-code">Gift or Discount Code</label>
+                        <div class="discount-input-group">
+                            <input type="text" id="discount-code" placeholder="Gift or Discount Code">
+                            <button type="button">APPLY</button>
+                        </div>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="totals-breakdown">
+                        <div class="line-item">
+                            <span>Subtotal</span>
+                            <span>${{ "%.2f"|format(total) }}</span>
+                        </div>
+                        <div class="line-item">
+                            <span>Tax</span>
+                            <span>$0.00</span>
+                        </div>
+                        <div class="line-item">
+                            <span>Shipping</span>
+                            <span>$0.00</span>
+                        </div>
+                        <div class="line-item total">
+                            <span>Total</span>
+                            <span>${{ "%.2f"|format(total) }}</span>
+                        </div>
+                    </div>
+
+                    <form action="{{ url_for('receipt_page') }}" method="GET">
+                        <button type="submit" class="checkout-btn">Checkout</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="order-summary-card" style="text-align: center;">
+                    <h2>Your cart is empty</h2>
+                    <p style="margin-bottom: 20px;">Add some coffee to get started!</p>
+                    <a href="{{ url_for('menu_page') }}" class="checkout-btn" style="display: inline-block; text-decoration: none;">Browse Menu</a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>
