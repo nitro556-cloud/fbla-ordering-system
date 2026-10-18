@@ -27,8 +27,8 @@ def add_to_cart():
 def cart_page():
     cart = session.get("cart", {})
     cart_items = get_cart_items(cart)
-    total = calculate_total(cart_items)
-    return render_template("cart.html", cart_items=cart_items, total=total)
+    subtotal, tax, total = calculate_total(cart_items)
+    return render_template("cart.html", cart_items=cart_items,subtotal=subtotal,tax=tax, total=total)
 
 
 @app.route("/remove-from-cart", methods=["POST"])
@@ -57,9 +57,9 @@ def update_cart():
 def receipt_page():
     cart = session.get("cart", {})
     cart_items = get_cart_items(cart)
-    total = calculate_total(cart_items)
+    subtotal,tax,total = calculate_total(cart_items)
     session["cart"] = {}
-    return render_template("receipt.html", cart_items=cart_items, total=total)
+    return render_template("receipt.html", cart_items=cart_items,subtotal=subtotal, tax=tax, total=total)
 
 
 #Help and Contact Page

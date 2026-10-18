@@ -1,5 +1,7 @@
 from data import menu
 
+tax_rate = 0.07
+
 def search_menu(query):
     query = query.strip().lower()
     if query == "":
@@ -22,4 +24,7 @@ def get_cart_items(cart):
 
 
 def calculate_total(cart_items):
-    return round(sum(item["price"] * item["quantity"] for item in cart_items), 2)
+    subtotal = round(sum(item["price"] * item["quantity"] for item in cart_items), 2)
+    tax = round(subtotal * tax_rate,2)
+    total = round(subtotal + tax,2)
+    return subtotal, tax, total
