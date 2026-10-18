@@ -8,30 +8,27 @@
     <title>Rendezvous Cafe | Menu</title>
 </head>
 <body>
-      <!-- Header / Navbar -->
     <header>
-        <img id ="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
-        <nav id = "navigation_bar">
-        <ul>
-            <li><a href="{{ url_for('home') }}">Home</a></li>
-            <li><a href="{{ url_for('cart_page') }}">Your Order</a></li>
-            <li><a href="#">Our Story</a></li>
-        </ul>
-        </nav>
+        <img id="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
+        <div class="header-right-wrapper">
+            {% for message in get_flashed_messages() %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+            <nav id="navigation_bar">
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('cart_page') }}">Your Order</a></li>
+                    <li><a href="#">Our Story</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-
-<!-- Page Title -->
 <section class="page-header">
     <h1 class="page-title">Our Menu</h1>
     <p class="page-description">Explore our drinks and food, made for your next cafe visit.</p>
 </section>
 
-{% for message in get_flashed_messages() %}
-    <p class="message">{{ message }}</p>
-{% endfor %}
-
-<!-- Search Bar -->
 <section class="search-bar">
     <form action="{{ url_for('menu_page') }}" method="get">
         <input type="text" name="q" value="{{ query }}" placeholder="Search">
@@ -39,7 +36,6 @@
     </form>
 </section>
 
-<!-- Category Grouping -->
 <section>
     <h2>Browse Categories</h2>
 
@@ -50,20 +46,22 @@
     </nav>
 </section>
 
-<!-- Menu Items -->
 <section>
     <h2>Our Items</h2>
 
     <div class="menu-grid">
         {% for item in menu %}
             <article class="menu-item">
-                <h3>{{ item.name }}</h3>
-                <p>{{ item.category }}</p>
-                <p>${{ "%.2f"|format(item.price) }}</p>
-                <form action="{{ url_for('add_to_cart') }}" method="POST">
-                    <input type="hidden" name="item_id" value="{{ item.id }}">
-                    <button type="submit" class="add-to-cart">Add to Cart</button>
-                </form>
+                <img src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}" class="menu-item-img">
+                <div class="menu-item-content">
+                    <h3>{{ item.name }}</h3>
+                    <p>{{ item.category }}</p>
+                    <p>${{ "%.2f"|format(item.price) }}</p>
+                    <form action="{{ url_for('add_to_cart') }}" method="POST">
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                    </form>
+                </div>
             </article>
         {% else %}
             <p>No items found. Try another search.</p>

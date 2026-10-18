@@ -6,6 +6,7 @@
     <title>Rendezvous Cafe | Receipt</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='menu-style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='receipt-style.css') }}">
 </head>
 <body>
     <header>
@@ -24,22 +25,40 @@
         <p class="page-description">Thank you for ordering from Rendezvous Cafe!</p>
     </section>
 
-    <section>
-        {% if cart_items %}
-            {% for item in cart_items %}
-                <article class="menu-item">
-                    <h3>{{ item.name }}</h3>
-                    <p>Quantity: {{ item.quantity }}</p>
-                    <p>${{ "%.2f"|format(item.price * item.quantity) }}</p>
-                </article>
-            {% endfor %}
+    <!-- Receipt Container -->
+    <section class="receipt-section">
+        <div class="receipt-card">
+            <h2>Order Details</h2>
 
-            <h2>Total: ${{ "%.2f"|format(total) }}</h2>
-        {% else %}
-            <p>No order found.</p>
-        {% endif %}
+            {% if cart_items %}
+                <div class="receipt-items-list">
+                    {% for item in cart_items %}
+                        <div class="receipt-item-row">
+                            <div class="receipt-img-wrapper">
+                                <img src="{{ url_for('static', filename='images/' + (item.image if item.image else 'hero-image.png')) }}" alt="{{ item.name }}">
+                            </div>
 
-        <a href="{{ url_for('menu_page') }}">Back to Menu</a>
+                            <div class="receipt-item-details">
+                                <h3>{{ item.name }}</h3>
+                                <p>Quantity: {{ item.quantity }}</p>
+                            </div>
+
+                            <div class="receipt-item-price">
+                                ${{ "%.2f"|format(item.price * item.quantity) }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="receipt-totals">
+                    <h3>Total: ${{ "%.2f"|format(total) }}</h3>
+                </div>
+            {% else %}
+                <p>No order found.</p>
+            {% endif %}
+
+            <a href="{{ url_for('menu_page') }}" class="checkout-btn" style="display: block; text-align: center; margin-top: 24px; text-decoration: none;">Back to Menu</a>
+        </div>
     </section>
 </body>
 </html>
