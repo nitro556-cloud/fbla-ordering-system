@@ -10,6 +10,7 @@ def search_menu(query):
            results.append(item) 
     return results
 
+
 def get_cart_items(cart):
     cart_items = []
     for item in menu:
@@ -17,6 +18,7 @@ def get_cart_items(cart):
         if quantity > 0:
             cart_items.append({**item, "quantity": quantity})
     return cart_items
+
 
 
 def calculate_total(cart_items):
