@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, flash, session
 from data import menu
-from logic import search_menu, get_cart_items, calculate_total
+from logic import search_menu, get_cart_items, calculate_total, add_item, update_item
 
 app = Flask(__name__)
 app.secret_key = "fbla-demo"
@@ -16,11 +16,10 @@ def menu_page():
 
 @app.route("/add-to-cart", methods=["POST"])
 def add_to_cart():
-    item_id = int(request.form["item_id"])
     cart = session.get("cart", {})
-    item_id = str(item_id)
-    cart[item_id] = cart.get(item_id, 0) + 1
+    error = add_item(cart, request.form.get("item_id", ""),request.form.get("quantity", "1"))
     session["cart"] = cart
+    flash(error if error else "Added to your cart!")
     return redirect("/menu")
 
 @app.route("/cart")
@@ -41,17 +40,13 @@ def remove_from_cart():
 
 @app.route("/update-cart", methods=["POST"])
 def update_cart():
-    item_id = request.form["item_id"]
-    quantity = int(request.form["quantity"])
     cart = session.get("cart", {})
-
-    if quantity <= 0:
-        cart.pop(item_id, None)
-    else:
-        cart[item_id] = quantity
-
+    error = update_item(cart, request.form.get("item_id", ""),request.form.get("quantity", ""))
     session["cart"] = cart
+    if error:
+        flash(error)
     return redirect("/cart")
+
 
 @app.route("/receipt")
 def receipt_page():

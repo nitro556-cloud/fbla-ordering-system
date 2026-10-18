@@ -27,6 +27,10 @@
     <p class="page-description">Explore our drinks and food, made for your next cafe visit.</p>
 </section>
 
+{% for message in get_flashed_messages() %}
+    <p class="message">{{ message }}</p>
+{% endfor %}
+
 <!-- Search Bar -->
 <section class="search-bar">
     <form action="{{ url_for('menu_page') }}" method="get">
