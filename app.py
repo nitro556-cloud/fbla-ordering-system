@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, flash, session
 from data import menu
-from logic import search_menu
+from logic import search_menu, get_cart_items, calculate_total
 
 app = Flask(__name__)
 app.secret_key = "fbla-demo"
@@ -17,10 +17,8 @@ def menu_page():
 @app.route("/add-to-cart", methods=["POST"])
 def add_to_cart():
     item_id = int(request.form["item_id"])
-
     cart = session.get("cart", {})
     item_id = str(item_id)
-
     cart[item_id] = cart.get(item_id, 0) + 1
     session["cart"] = cart
     return redirect("/menu")
@@ -28,35 +26,23 @@ def add_to_cart():
 @app.route("/cart")
 def cart_page():
     cart = session.get("cart", {})
-    cart_items = []
-
-    for item in menu:
-        quantity = cart.get(str(item["id"]), 0)
-
-        if quantity > 0:
-            cart_items.append({
-                **item,
-                "quantity": quantity
-            })
-
-    total = sum(item["price"] * item["quantity"] for item in cart_items)
+    cart_items = get_cart_items(cart)
+    total = calculate_total(cart_items)
     return render_template("cart.html", cart_items=cart_items, total=total)
+
 
 @app.route("/remove-from-cart", methods=["POST"])
 def remove_from_cart():
     item_id = request.form["item_id"]
     cart = session.get("cart", {})
-
     cart.pop(item_id, None)
     session["cart"] = cart
-
     return redirect("/cart")
 
 @app.route("/update-cart", methods=["POST"])
 def update_cart():
     item_id = request.form["item_id"]
     quantity = int(request.form["quantity"])
-
     cart = session.get("cart", {})
 
     if quantity <= 0:
@@ -70,22 +56,11 @@ def update_cart():
 @app.route("/receipt")
 def receipt_page():
     cart = session.get("cart", {})
-    cart_items = []
-
-    for item in menu:
-        quantity = cart.get(str(item["id"]), 0)
-
-        if quantity > 0:
-            cart_items.append({
-                **item,
-                "quantity": quantity
-            })
-
-    total = sum(item["price"] * item["quantity"] for item in cart_items)
-
+    cart_items = get_cart_items(cart)
+    total = calculate_total(cart_items)
     session["cart"] = {}
-
     return render_template("receipt.html", cart_items=cart_items, total=total)
+
 
 #Help and Contact Page
 @app.route("/contact")

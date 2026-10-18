@@ -10,3 +10,14 @@ def search_menu(query):
            results.append(item) 
     return results
 
+def get_cart_items(cart):
+    cart_items = []
+    for item in menu:
+        quantity = cart.get(str(item["id"]), 0)
+        if quantity > 0:
+            cart_items.append({**item, "quantity": quantity})
+    return cart_items
+
+
+def calculate_total(cart_items):
+    return round(sum(item["price"] * item["quantity"] for item in cart_items), 2)
