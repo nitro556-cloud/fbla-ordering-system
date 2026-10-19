@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, flash, session
 from data import menu
-from logic import search_menu, get_cart_items, calculate_total, add_item, update_item
+from logic import search_menu, get_cart_items, calculate_total ,add_item, update_item
 
 app = Flask(__name__)
 app.secret_key = "fbla-demo"

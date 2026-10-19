@@ -52,7 +52,9 @@
     <div class="menu-grid">
         {% for item in menu %}
             <article class="menu-item">
-                <img src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}" class="menu-item-img">
+                <div class="img-wrap">
+                    <img src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}" class="menu-item-img" loading="lazy" decoding="async">
+                </div>
                 <div class="menu-item-content">
                     <h3>{{ item.name }}</h3>
                     <p>{{ item.category }}</p>
