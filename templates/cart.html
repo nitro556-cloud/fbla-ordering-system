@@ -23,7 +23,9 @@
         <h1 class="page-title">Your Order</h1>
         <p class="page-description">Review your order and make any necessary changes before checkout.</p>
     </section>
-
+    {% for message in get_flashed_messages() %}
+        <div class="cart-message">{{ message }}</div>
+    {% endfor %}
     <main class="cart-container">
         <!-- Left Column: Delivery & Fulfillment Info -->
         <section class="delivery-section">

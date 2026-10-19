@@ -50,7 +50,9 @@
                     {% endfor %}
                 </div>
 
-                <div class="receipt-totals">
+                                <div class="receipt-totals">
+                    <p>Subtotal: ${{ "%.2f"|format(subtotal) }}</p>
+                    <p>Tax: ${{ "%.2f"|format(tax) }}</p>
                     <h3>Total: ${{ "%.2f"|format(total) }}</h3>
                 </div>
             {% else %}
