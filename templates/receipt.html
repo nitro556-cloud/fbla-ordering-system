@@ -1,66 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rendezvous Cafe | Receipt</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='menu-style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='receipt-style.css') }}">
-</head>
-<body>
-    <header>
-        <img id="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
-        <nav id="navigation_bar">
-            <ul>
-                <li><a href="{{ url_for('home') }}">Home</a></li>
-                <li><a href="{{ url_for('menu_page') }}">Ordering</a></li>
-                <li><a href="#">Our Story</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section class="page-header">
-        <h1 class="page-title">Order Receipt</h1>
-        <p class="page-description">Thank you for ordering from Rendezvous Cafe!</p>
-    </section>
-
-    <!-- Receipt Container -->
-    <section class="receipt-section">
-        <div class="receipt-card">
-            <h2>Order Details</h2>
-
-            {% if cart_items %}
-                <div class="receipt-items-list">
-                    {% for item in cart_items %}
-                        <div class="receipt-item-row">
-                            <div class="receipt-img-wrapper">
-                                <img src="{{ url_for('static', filename='images/' + (item.image if item.image else 'hero-image.png')) }}" alt="{{ item.name }}">
-                            </div>
-
-                            <div class="receipt-item-details">
-                                <h3>{{ item.name }}</h3>
-                                <p>Quantity: {{ item.quantity }}</p>
-                            </div>
-
-                            <div class="receipt-item-price">
-                                ${{ "%.2f"|format(item.price * item.quantity) }}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                                <div class="receipt-totals">
-                    <p>Subtotal: ${{ "%.2f"|format(subtotal) }}</p>
-                    <p>Tax: ${{ "%.2f"|format(tax) }}</p>
-                    <h3>Total: ${{ "%.2f"|format(total) }}</h3>
-                </div>
-            {% else %}
-                <p>No order found.</p>
-            {% endif %}
-
-            <a href="{{ url_for('menu_page') }}" class="checkout-btn" style="display: block; text-align: center; margin-top: 24px; text-decoration: none;">Back to Menu</a>
-        </div>
-    </section>
-</body>
-</html>
+{# A saved order snapshot makes receipt refresh safe and preserves old prices. #}
+{% extends "base.html" %}
+{% block title %}Receipt {{ order.number }}{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='receipt-style.css') }}">
+{% endblock %}
+{% block content %}
+<section class="receipt-card">
+<h1>Order #{{ order.number }}</h1>
+<p>{{ order.timestamp }} · {{ order.fulfillment|title }}</p>
+{% for item in order['items'] %}
+<p>{{ item.name }} × {{ item.quantity }} — {{ (item.price * item.quantity)|money }}</p>
+{% endfor %}
+{% set totals = order %}
+{% include '_totals.html' %}
+<p>Discount code: {{ order.discount_code or 'None' }}</p>
+<p>Instructions: {{ order.instructions or 'None' }}</p>
+<p>Order saved. You can refresh this receipt safely.</p>
+<a href="{{ url_for('menu_page') }}">Back to Menu</a>
+</section>
+{% endblock %}

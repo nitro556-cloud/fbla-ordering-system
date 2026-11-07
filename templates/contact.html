@@ -1,0 +1,30 @@
+{# Instructions and keyword FAQ assistance work completely offline. #}
+{% extends "base.html" %}
+{% block title %}Help & Contact{% endblock %}
+{% block content %}
+<section>
+<h1>Help & Contact</h1>
+<h2>Ask an ordering question</h2>
+<form method="post">
+<label for="question">Your question</label>
+<input type="text" id="question" name="question" maxlength="300" value="{{ question }}" placeholder="How does the budget work?">
+<button>Ask</button>
+</form>
+{% if answer %}
+<p role="status">{{ answer }}</p>
+{% endif %}
+<h2>How to use this program</h2>
+<ol>
+<li>Browse Menu; search by name or select Drinks or Food.</li>
+<li>Choose a whole-number quantity up to 10 and available stock, then Add to Cart.</li>
+<li>Open Your Order to update or remove items.</li>
+<li>Select fulfillment, add instructions, optionally enter CAFE10 and a budget, and save settings.</li>
+<li>Review the total and place the order. Save the receipt number.</li>
+<li>Open Sales Report to filter orders by date/category and compare item sales.</li>
+</ol>
+<h2>Local Business Digital Ordering System</h2>
+<p>This student project lets cafe customers browse products, manage a cart, calculate costs, stay within a budget, and review saved orders. Inventory checks prevent selling unavailable products. Sales summaries help a local business understand demand.</p>
+<h2>Contact</h2>
+<p>Rendezvous Cafe is a student demonstration set in Cumming, Georgia. Real contact details and a verified pickup address have not been supplied. No real orders are sent.</p>
+</section>
+{% endblock %}

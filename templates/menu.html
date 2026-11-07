@@ -1,74 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='menu-style.css') }}">
-    <title>Rendezvous Cafe | Menu</title>
-</head>
-<body>
-    <header>
-        <img id="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
-        <div class="header-right-wrapper">
-            {% for message in get_flashed_messages() %}
-                <div class="message">{{ message }}</div>
-            {% endfor %}
-            <nav id="navigation_bar">
-                <ul>
-                    <li><a href="{{ url_for('home') }}">Home</a></li>
-                    <li><a href="{{ url_for('cart_page') }}">Your Order</a></li>
-                    <li><a href="#">Our Story</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-<section class="page-header">
-    <h1 class="page-title">Our Menu</h1>
-    <p class="page-description">Explore our drinks and food, made for your next cafe visit.</p>
-</section>
-
-<section class="search-bar">
-    <form action="{{ url_for('menu_page') }}" method="get">
-        <input type="text" name="q" value="{{ query }}" placeholder="Search">
-        <button type="submit">Search</button>
-    </form>
-</section>
-
+{# Menu cards show prices, available inventory, and quantity forms. #}
+{% extends "base.html" %}
+{% block title %}Menu{% endblock %}
+{% block content %}
 <section>
-    <h2>Browse Categories</h2>
-
-    <nav aria-label="Menu categories">
-        <a href="{{ url_for('menu_page') }}">All Items</a>
-        <a href="{{ url_for('menu_page', q='Drinks') }}">Drinks</a>
-        <a href="{{ url_for('menu_page', q='Food') }}">Food</a>
-    </nav>
+<h1 class="page-title">Our Menu</h1>
+<p>Choose 1–10 of each item, within available stock. Review totals in Your Order.</p>
 </section>
-
 <section>
-    <h2>Our Items</h2>
-
-    <div class="menu-grid">
-        {% for item in menu %}
-            <article class="menu-item">
-                <div class="img-wrap">
-                    <img src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}" class="menu-item-img" loading="lazy" decoding="async">
-                </div>
-                <div class="menu-item-content">
-                    <h3>{{ item.name }}</h3>
-                    <p>{{ item.category }}</p>
-                    <p>${{ "%.2f"|format(item.price) }}</p>
-                    <form action="{{ url_for('add_to_cart') }}" method="POST">
-                        <input type="hidden" name="item_id" value="{{ item.id }}">
-                        <button type="submit" class="add-to-cart">Add to Cart</button>
-                    </form>
-                </div>
-            </article>
-        {% else %}
-            <p>No items found. Try another search.</p>
-        {% endfor %}
-    </div>
+<form method="get">
+<label for="search">Search menu</label>
+<input id="search" name="q" value="{{ query }}" type="text">
+<button>Search</button>
+</form>
+<nav aria-label="Menu categories">
+{% for category in ['', 'Drinks', 'Food'] %}
+<a href="{{ url_for('menu_page', q=category) }}">{{ category or 'All Items' }}</a>
+{% endfor %}
+</nav>
 </section>
-</body>
-</html>
+<section class="menu-grid">
+{% for item in menu %}
+<article class="menu-item">
+<img class="menu-item-img" src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}">
+<div class="menu-item-content">
+<h2>{{ item.name }}</h2>
+<p>{{ item.category }} · {{ item.price|money }}</p>
+<p>
+{% if item.stock == 0 %}Sold Out{% else %}Only {{ item.stock }} left{% endif %}
+</p>
+<form action="{{ url_for('add_to_cart') }}" method="post">
+<input type="hidden" name="item_id" value="{{ item.id }}">
+<label for="qty-{{ item.id }}">Quantity</label>
+<input id="qty-{{ item.id }}" name="quantity" type="number" min="1" max="{{ [10, item.stock]|min }}" value="1" required {% if not item.stock %}disabled{% endif %}>
+<button {% if not item.stock %}disabled{% endif %}>Add to Cart</button>
+</form>
+</div>
+</article>
+{% else %}
+<p>No items found. Try another search.</p>
+{% endfor %}
+</section>
+{% endblock %}

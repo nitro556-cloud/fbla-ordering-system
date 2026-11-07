@@ -1,0 +1,8 @@
+# Local environments, private settings, and demonstration order records.
+.venv/
+__pycache__/
+*.pyc
+cafe_data.json
+cafe_data.tmp
+.env
+.DS_Store

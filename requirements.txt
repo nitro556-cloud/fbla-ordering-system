@@ -1,0 +1,2 @@
+# Flask is the only direct third-party library.
+Flask==3.1.2

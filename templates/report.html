@@ -1,0 +1,65 @@
+{# Date/category filters and item sorting help analyze saved order history. #}
+{% extends "base.html" %}
+{% block title %}Sales Report{% endblock %}
+{% block content %}
+<section>
+<h1>Sales Report</h1>
+<form method="get">
+<label>From <input type="date" name="start" value="{{ filters.get('start','') }}">
+</label>
+<label>Through <input type="date" name="end" value="{{ filters.get('end','') }}">
+</label>
+<label>Category <select name="category">
+{% for option in ['', 'Drinks', 'Food'] %}
+<option value="{{ option }}" {% if filters.get('category','') == option %}selected{% endif %}>{{ option or 'All' }}</option>
+{% endfor %}
+</select>
+</label>
+<label>Sort items by <select name="sort">
+{% for option in ['revenue','quantity'] %}
+<option {% if filters.get('sort','revenue') == option %}selected{% endif %}>{{ option }}</option>
+{% endfor %}
+</select>
+</label>
+<button>Apply filters</button>
+<a href="{{ url_for('report_page') }}">Reset</a>
+</form>
+{% if error %}
+<p role="alert">{{ error }}</p>
+{% else %}
+<p>Matching orders: {{ report.orders|length }} · Full-order revenue: {{ report.revenue|money }}</p>
+<p>Category filters select orders containing that category. Full-order revenue includes all their items, discounts, tax, and delivery. Item revenue below is before discounts/tax/fees and includes only the selected category.</p>
+<p>Best seller by quantity: {% if report.best %}{{ report.best.name }} ({{ report.best.quantity }}){% else %}No sales yet{% endif %}
+</p>
+<table>
+<caption>Item sales</caption>
+<tr>
+<th>Item</th>
+<th>Quantity</th>
+<th>Item revenue</th>
+</tr>
+{% for row in report.sales %}
+<tr>
+<td>{{ row.name }}</td>
+<td>{{ row.quantity }}</td>
+<td>{{ row.revenue|money }}</td>
+</tr>
+{% endfor %}
+</table>
+<h2>Order history</h2>
+{% for order in report.orders %}
+<p>
+<a href="{{ url_for('receipt_page', number=order.number) }}">Order #{{ order.number }}</a> · {{ order.timestamp }} · {{ order.total|money }}</p>
+{% else %}
+<p>No matching orders.</p>
+{% endfor %}
+<h2>Current low stock (5 or fewer)</h2>
+<p>Current inventory, independent of the date filter.</p>
+{% for item in report.low_stock %}
+<p>{{ item.name }}: {{ item.stock }}</p>
+{% else %}
+<p>No low-stock items.</p>
+{% endfor %}
+{% endif %}
+</section>
+{% endblock %}

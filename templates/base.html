@@ -1,0 +1,39 @@
+{# Shared page structure keeps navigation and feedback identical across pages. #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rendezvous Cafe | {% block title %}Ordering{% endblock %}
+</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='menu-style.css') }}">
+{% block styles %}
+{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='features.css') }}">
+</head>
+<body>
+<header>
+<a href="{{ url_for('home') }}">
+<img id="logo" src="{{ url_for('static', filename='images/logo.png') }}" alt="Rendezvous Cafe home">
+</a>
+<nav id="navigation_bar" aria-label="Main navigation">
+<ul>
+{% for endpoint, label in [('home','Home'), ('menu_page','Menu'), ('cart_page','Your Order'), ('report_page','Sales Report'), ('story_page','Our Story'), ('contact_page','Help & Contact')] %}
+<li>
+<a href="{{ url_for(endpoint) }}" {% if request.endpoint == endpoint %}aria-current="page"{% endif %}>{{ label }}</a>
+</li>
+{% endfor %}
+</ul>
+</nav>
+</header>
+<div class="feedback" aria-live="polite">
+{% for message in get_flashed_messages() %}
+<p>{{ message }}</p>
+{% endfor %}
+</div>
+{% block content %}
+{% endblock %}
+<footer>Student ordering demonstration · Cumming, Georgia · No payments or real deliveries</footer>
+</body>
+</html>
