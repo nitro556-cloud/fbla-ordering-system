@@ -1,65 +1,110 @@
-{# Date/category filters and item sorting help analyze saved order history. #}
 {% extends "base.html" %}
-{% block title %}Sales Report{% endblock %}
+{% block title %}Sales report & history{% endblock %}
 {% block content %}
-<section>
+<header class="page-heading">
+<div>
+<p class="eyebrow">Behind the counter</p>
 <h1>Sales Report</h1>
-<form method="get">
-<label>From <input type="date" name="start" value="{{ filters.get('start','') }}">
-</label>
-<label>Through <input type="date" name="end" value="{{ filters.get('end','') }}">
-</label>
-<label>Category <select name="category">
-{% for option in ['', 'Drinks', 'Food'] %}
-<option value="{{ option }}" {% if filters.get('category','') == option %}selected{% endif %}>{{ option or 'All' }}</option>
-{% endfor %}
+</div>
+<p>Saved orders, item sales, and current inventory.<br>A clear view of the café demonstration.</p>
+</header>
+<form class="report-filters" method="get">
+<div class="field">
+<label for="start">From</label>
+<input id="start" type="date" name="start" value="{{ filters.get('start','') }}">
+</div>
+<div class="field">
+<label for="end">Through</label>
+<input id="end" type="date" name="end" value="{{ filters.get('end','') }}">
+</div>
+<div class="field">
+<label for="category">Category</label>
+<select id="category" name="category">{% for option in ['', 'Drinks', 'Food'] %}
+<option value="{{ option }}" {% if filters.get('category','') == option %}selected{% endif %}>{{ option or 'All categories' }}</option>{% endfor %}
 </select>
-</label>
-<label>Sort items by <select name="sort">
-{% for option in ['revenue','quantity'] %}
-<option {% if filters.get('sort','revenue') == option %}selected{% endif %}>{{ option }}</option>
-{% endfor %}
+</div>
+<div class="field">
+<label for="sort">Sort items by</label>
+<select id="sort" name="sort">{% for option in ['revenue','quantity'] %}
+<option value="{{ option }}" {% if filters.get('sort','revenue') == option %}selected{% endif %}>{{ option|title }}</option>{% endfor %}
 </select>
-</label>
+</div>
 <button>Apply filters</button>
 <a href="{{ url_for('report_page') }}">Reset</a>
 </form>
 {% if error %}
-<p role="alert">{{ error }}</p>
-{% else %}
-<p>Matching orders: {{ report.orders|length }} · Full-order revenue: {{ report.revenue|money }}</p>
-<p>Category filters select orders containing that category. Full-order revenue includes all their items, discounts, tax, and delivery. Item revenue below is before discounts/tax/fees and includes only the selected category.</p>
-<p>Best seller by quantity: {% if report.best %}{{ report.best.name }} ({{ report.best.quantity }}){% else %}No sales yet{% endif %}
-</p>
+<p role="alert">{{ error }}</p>{% else %}
+<dl class="report-stats">
+<div>
+<dt>Matching orders</dt>
+<dd>{{ report.orders|length }}</dd>
+</div>
+<div>
+<dt>Full-order revenue</dt>
+<dd>{{ report.revenue|money }}</dd>
+</div>
+<div>
+<dt>Best seller by quantity</dt>
+<dd class="best-seller">{% if report.best %}{{ report.best.name }}<small>{{ report.best.quantity }} sold</small>{% else %}No sales yet{% endif %}
+</dd>
+</div>
+</dl>
+<p class="report-explainer">Category filters select orders containing that category. Full-order revenue includes all their items, discounts, tax, and delivery. Gross item revenue includes only the selected category, before discounts, tax, and fees.</p>
+<div class="report-columns">
+<section>
+<div class="section-heading">
+<h2>Item sales</h2>
+<span>Gross revenue</span>
+</div>
+<div class="table-scroll">
 <table>
-<caption>Item sales</caption>
+<caption class="sr-only">Item sales before discounts, tax, and fees</caption>
+<thead>
 <tr>
-<th>Item</th>
-<th>Quantity</th>
-<th>Item revenue</th>
+<th scope="col">Item</th>
+<th scope="col">Quantity</th>
+<th scope="col">Item revenue</th>
 </tr>
-{% for row in report.sales %}
+</thead>
+<tbody>{% for row in report.sales %}
 <tr>
-<td>{{ row.name }}</td>
+<th scope="row">{{ row.name }}</th>
 <td>{{ row.quantity }}</td>
 <td>{{ row.revenue|money }}</td>
-</tr>
-{% endfor %}
+</tr>{% else %}
+<tr>
+<td colspan="3" class="table-empty">No sales for these filters. Try a different date or category.</td>
+</tr>{% endfor %}
+</tbody>
 </table>
-<h2>Order history</h2>
-{% for order in report.orders %}
-<p>
-<a href="{{ url_for('receipt_page', number=order.number) }}">Order #{{ order.number }}</a> · {{ order.timestamp }} · {{ order.total|money }}</p>
-{% else %}
-<p>No matching orders.</p>
-{% endfor %}
-<h2>Current low stock (5 or fewer)</h2>
-<p>Current inventory, independent of the date filter.</p>
-{% for item in report.low_stock %}
-<p>{{ item.name }}: {{ item.stock }}</p>
-{% else %}
-<p>No low-stock items.</p>
-{% endfor %}
-{% endif %}
+</div>
 </section>
+<section class="inventory-section">
+<h2>Low stock</h2>
+<p class="field-hint">5 or fewer left. Current inventory, independent of the date filter.</p>{% for item in report.low_stock %}
+<div class="inventory-row">
+<span>{{ item.name }}</span>
+<strong class="low-stock">{{ item.stock }} {{ 'left' if item.stock else '· sold out' }}</strong>
+</div>{% else %}
+<p class="muted">No low-stock items in this category.</p>{% endfor %}
+</section>
+</div>
+<section class="order-history">
+<div class="section-heading">
+<h2>Order history</h2>
+<span>{{ report.orders|length }} saved</span>
+</div>{% for order in report.orders|reverse %}
+<a class="history-row" href="{{ url_for('receipt_page', number=order.number) }}">
+<strong>Order #{{ order.number }}</strong>
+<time datetime="{{ order.timestamp }}">{{ order.timestamp|replace('T', ' · ') }}</time>
+<span>{{ order.fulfillment|title }}</span>
+<strong>{{ order.total|money }} <span aria-hidden="true">↗</span>
+</strong>
+</a>{% else %}
+<div class="history-empty">
+<h3>No matching orders.</h3>
+<p>Orders appear here after checkout. Adjust the filters or <a href="{{ url_for('menu_page') }}">start a demo order</a>.</p>
+</div>{% endfor %}
+</section>
+{% endif %}
 {% endblock %}

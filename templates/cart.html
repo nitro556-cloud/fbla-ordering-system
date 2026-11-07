@@ -1,69 +1,93 @@
-{# Cart item forms and checkout settings submit actual values to Flask. #}
 {% extends "base.html" %}
 {% block title %}Your Order{% endblock %}
-{% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='cart-style.css') }}">
-{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='cart-style.css') }}">{% endblock %}
 {% block content %}
-<section>
-<h1 class="page-title">Your Order</h1>
-<p>Update quantities (0 removes), then save settings to preview the total. Checkout uses the settings currently entered.</p>
-</section>
-<main class="cart-container">
-<section class="order-summary-card">
-{% for item in cart_items %}
-<div class="cart-item-row">
-<img width="80" src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}">
+<header class="page-heading">
 <div>
-<h2>{{ item.name }}</h2>
-<p>{{ (item.price * item.quantity)|money }} · {{ item.stock }} available</p>
-<form action="{{ url_for('update_cart') }}" method="post">
+<p class="eyebrow">Your table, your choices</p>
+<h1>Your Order</h1>
+</div>
+<a href="{{ url_for('menu_page') }}">← Keep browsing</a>
+</header>
+{% if cart_items %}
+<div class="cart-container">
+<section class="order-items" aria-labelledby="items-heading">
+<div class="section-heading">
+<h2 id="items-heading">On your order</h2>
+<span>{{ cart_items|sum(attribute='quantity') }} items</span>
+</div>
+{% for item in cart_items %}
+<article class="cart-item-row">
+<img src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}">
+<div class="cart-item-details">
+<div class="product-heading">
+<h3>{{ item.name }}</h3>
+<span class="price">{{ (item.price * item.quantity)|money }}</span>
+</div>
+<p class="muted">{{ item.price|money }} each · {{ item.stock }} available</p>
+{% if item.quantity > item.stock %}
+<p role="alert">Stock changed. Reduce the quantity or remove this item.</p>{% endif %}
+<form class="cart-quantity-form" action="{{ url_for('update_cart') }}" method="post">
 <input type="hidden" name="item_id" value="{{ item.id }}">
-<label for="qty-{{ item.id }}">Quantity</label>
+<label class="sr-only" for="qty-{{ item.id }}">Quantity for {{ item.name }}</label>
+<div class="quantity-control">
+<button type="button" data-step="-1" aria-label="Decrease {{ item.name }} quantity" hidden>−</button>
 <input id="qty-{{ item.id }}" name="quantity" type="number" min="0" max="10" value="{{ item.quantity }}" required>
-<button>Update</button>
-</form>
-<form class="remove-form" action="{{ url_for('remove_from_cart') }}" method="post">
-<input type="hidden" name="item_id" value="{{ item.id }}">
-<button>Remove</button>
+<button type="button" data-step="1" aria-label="Increase {{ item.name }} quantity" hidden>+</button>
+</div>
+<button class="secondary">Update</button>
+<button class="text-button" formaction="{{ url_for('remove_from_cart') }}" formnovalidate aria-label="Remove {{ item.name }}">Remove</button>
 </form>
 </div>
-</div>
-{% else %}
-<h2>Your cart is empty</h2>
-<a href="{{ url_for('menu_page') }}">Browse Menu</a>
-{% endfor %}
+</article>{% endfor %}
+<p class="field-hint">Change a quantity, then select Update. Setting it to 0 removes the item.</p>
 </section>
-<section class="info-card">
-<form class="settings-form" action="{{ url_for('checkout') }}" method="post">
-<fieldset>
-<legend>Fulfillment</legend>
-{% for option in ['pickup', 'delivery'] %}
-<label>
-<input type="radio" name="fulfillment" value="{{ option }}" {% if settings.fulfillment == option %}checked{% endif %}>{{ option|title }} {% if option == 'delivery' %}($3.99 demo fee){% else %}(free){% endif %}
-</label>
-{% endfor %}
+<aside class="order-checkout" aria-labelledby="checkout-heading">
+<h2 id="checkout-heading">Make it yours</h2>
+<form class="settings-form" action="{{ url_for('checkout') }}" method="post" data-settings-form>
+<fieldset class="fulfillment">
+<legend>How would you like your order?</legend>{% for option in ['pickup', 'delivery'] %}
+<label class="fulfillment-option">
+<input type="radio" name="fulfillment" value="{{ option }}" {% if settings.fulfillment == option %}checked{% endif %}>
+<span>{{ option|title }}<small>{{ 'Free' if option == 'pickup' else 'Simulated · $3.99' }}</small>
+</span>
+</label>{% endfor %}
 </fieldset>
-<label for="instructions">Special instructions (up to 300 characters)</label>
-<textarea id="instructions" name="instructions" maxlength="300">{{ settings.instructions }}</textarea>
-<label for="discount">Discount code (CAFE10 saves 10% on items)</label>
-<input id="discount" name="discount_code" value="{{ settings.discount_code }}" type="text">
-<label for="budget">Optional budget in dollars (leave blank for no limit)</label>
-<input id="budget" name="budget" value="{{ settings.budget_text }}" inputmode="decimal" type="text">
-<button formaction="{{ url_for('save_settings') }}">Save settings & preview total</button>
-{% if totals %}
-{% include '_totals.html' %}
-{% if settings.budget is not none %}
-<p>Budget remaining: {{ (settings.budget - totals.total)|money }}</p>
-{% if totals.total > settings.budget %}
-<p role="alert">Budget exceeded. Reduce quantities, remove an item, or choose pickup. Checkout will block this order.</p>
-{% endif %}
-{% endif %}
-{% else %}
-<p>Fix the settings above to calculate your total.</p>
-{% endif %}
-<button class="checkout-btn" {% if not cart_items %}disabled{% endif %}>Place order</button>
+<div class="field">
+<label for="instructions">Special instructions <span>Optional</span>
+</label>
+<textarea id="instructions" name="instructions" maxlength="300" rows="2" placeholder="Anything to note about your order?" aria-describedby="instructions-hint">{{ settings.instructions }}</textarea>
+<p id="instructions-hint" class="field-hint">Up to 300 characters. Instructions are saved with your receipt.</p>
+</div>
+<div class="field">
+<label for="discount">Discount code</label>
+<input id="discount" name="discount_code" value="{{ settings.discount_code }}" type="text" placeholder="Enter code" aria-describedby="discount-hint">
+<p id="discount-hint" class="field-hint">Use CAFE10 for 10% off items.</p>
+</div>
+<div class="field">
+<label for="budget">Spending limit <span>Optional</span>
+</label>
+<input id="budget" name="budget" value="{{ settings.budget_text }}" inputmode="decimal" type="text" placeholder="Amount in dollars" aria-describedby="budget-hint">
+<p id="budget-hint" class="field-hint">We'll block an order that exceeds your budget.</p>
+</div>
+<button class="secondary preview-button" formaction="{{ url_for('save_settings') }}">Update total</button>
+<p class="field-hint" data-preview-status role="status">Total reflects your saved choices. Update it after making changes.</p>
+<div class="total-preview">{% if totals %}{% include '_totals.html' %}{% if settings.budget is not none %}
+<p class="budget-state {% if totals.total > settings.budget %}over-budget{% endif %}">Budget remaining: {{ (settings.budget - totals.total)|money }}</p>{% if totals.total > settings.budget %}
+<p role="alert">Budget exceeded. Reduce quantities, remove an item, or choose pickup. Checkout will block this order.</p>{% endif %}{% endif %}{% else %}
+<p role="alert">Fix the settings above to calculate your total.</p>{% endif %}
+</div>
+<button class="checkout-btn">Place demo order <span aria-hidden="true">→</span>
+</button>
+<p class="checkout-note">No payment required. No real order is sent.<br>Final totals and stock are checked when you place your order.</p>
 </form>
-</section>
-</main>
+</aside>
+</div>
+{% else %}
+<section class="empty-state">
+<span class="empty-mark" aria-hidden="true">r.</span>
+<h2>A little room for something good.</h2>
+<p>Your cart is empty. Choose a drink or a bite to begin.</p>
+<a class="button" href="{{ url_for('menu_page') }}">Browse the menu →</a>
+</section>{% endif %}
 {% endblock %}

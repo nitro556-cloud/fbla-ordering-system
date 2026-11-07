@@ -23,18 +23,30 @@ def home():
 def menu_page():
     """Read a search query and return matching menu cards."""
     query = request.args.get("q", "")
-    return render_template("menu.html", menu=search_menu(load_data()["menu"], query), query=query)
+    category = request.args.get("category", "")
+    if category not in ("", "Drinks", "Food"):
+        category = ""
+    menu = search_menu(load_data()["menu"], query)
+    if category:
+        menu = [item for item in menu if item["category"] == category]
+    return render_template("menu.html", menu=menu, query=query, category=category)
 
 
 @app.route("/add-to-cart", methods=["POST"])
 def add_to_cart():
     """Validate item/quantity input, update session cart, and redirect to menu."""
     cart = session.get("cart", {})
-    error = change_quantity(cart, load_data()["menu"], request.form.get("item_id", ""),
+    menu = load_data()["menu"]
+    error = change_quantity(cart, menu, request.form.get("item_id", ""),
                             request.form.get("quantity", ""), adding=True)
     session["cart"] = cart
-    flash(error or "Added to your cart!")
-    return redirect(url_for("menu_page"))
+    if error:
+        flash(error, "error")
+    else:
+        item = next(item for item in menu if str(item["id"]) == request.form.get("item_id"))
+        flash(f"Added {int(request.form['quantity'])} × {item['name']} to your order.", "success")
+    return redirect(url_for("menu_page", q=request.form.get("q", ""),
+                            category=request.form.get("category", "")))
 
 
 @app.route("/cart")
@@ -53,7 +65,7 @@ def update_cart():
     error = change_quantity(cart, load_data()["menu"], request.form.get("item_id", ""),
                             request.form.get("quantity", ""))
     session["cart"] = cart
-    flash(error or "Quantity updated.")
+    flash(error or "Quantity updated.", "error" if error else "success")
     return redirect(url_for("cart_page"))
 
 
@@ -66,7 +78,7 @@ def remove_from_cart():
         cart.pop(item_id)
         flash("Item removed.")
     else:
-        flash("Choose an item in your cart to remove.")
+        flash("Choose an item in your cart to remove.", "error")
     session["cart"] = cart
     return redirect(url_for("cart_page"))
 
@@ -77,7 +89,7 @@ def checkout():
     """Validate settings; save preview settings or place an order and redirect."""
     settings, error = parse_settings(request.form)
     if error:
-        flash(error)
+        flash(error, "error")
         return render_template("cart.html", cart_items=get_cart_items(session.get("cart", {}), load_data()["menu"]),
                                settings=settings, totals=None), 400
     session["settings"] = settings
@@ -86,7 +98,7 @@ def checkout():
         return redirect(url_for("cart_page"))
     order, error = place_order(session.get("cart", {}), settings)
     if error:
-        flash(error)
+        flash(error, "error")
         return redirect(url_for("cart_page"))
     session["cart"] = {}
     session.pop("settings", None)

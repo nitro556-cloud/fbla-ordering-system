@@ -1,11 +1,25 @@
-{# Explain the project without inventing a real business history. #}
 {% extends "base.html" %}
 {% block title %}Our Story{% endblock %}
 {% block content %}
-<section>
-<h1>Our Story</h1>
-<p>Rendezvous Cafe is a student-built local business ordering demonstration for FBLA Introduction to Programming. Our goal is to make browsing food, managing quantities, and understanding purchase totals easy.</p>
-<p>The cafe concept is set in Cumming, Georgia. This prototype does not accept payments or dispatch deliveries.</p>
-<a href="{{ url_for('contact_page') }}">Read the ordering instructions</a>
+<section class="story-layout">
+<div class="story-copy">
+<p class="eyebrow">The idea behind Rendezvous</p>
+<h1>A place to meet.<br>A simple way<br>to order.</h1>
+<p class="lead">Rendezvous begins with a familiar moment: choosing a coffee and something to eat.</p>
+<p>Built for FBLA Introduction to Programming, this student project explores how a local café can make ordering clearer—from browsing the menu to understanding the final total.</p>
+<p>The café concept is set in Cumming, Georgia. Every order here is a demonstration: no payments are accepted and no deliveries are dispatched.</p>
+<a class="button" href="{{ url_for('menu_page') }}">Take a look at the menu ↗</a>
+</div>
+<figure class="story-photo">
+<img src="{{ url_for('static', filename='images/latte.jpg') }}" alt="A latte from the Rendezvous demonstration menu">
+<figcaption>A coffee. A conversation. A rendezvous.</figcaption>
+</figure>
+</section>
+<section class="story-purpose">
+<h2>Considered from<br>menu to receipt.</h2>
+<div>
+<p>Live inventory, clear prices, an optional spending limit, and a saved receipt make it easier to understand every choice. Sales reporting gives the café a view of orders and demand.</p>
+<a href="{{ url_for('contact_page') }}">Read the ordering guide →</a>
+</div>
 </section>
 {% endblock %}

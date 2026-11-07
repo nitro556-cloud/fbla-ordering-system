@@ -1,21 +1,36 @@
-{# A saved order snapshot makes receipt refresh safe and preserves old prices. #}
 {% extends "base.html" %}
-{% block title %}Receipt {{ order.number }}{% endblock %}
-{% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='receipt-style.css') }}">
-{% endblock %}
+{% block title %}Order {{ order.number }} confirmed{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='receipt-style.css') }}">{% endblock %}
 {% block content %}
-<section class="receipt-card">
-<h1>Order #{{ order.number }}</h1>
-<p>{{ order.timestamp }} · {{ order.fulfillment|title }}</p>
-{% for item in order['items'] %}
-<p>{{ item.name }} × {{ item.quantity }} — {{ (item.price * item.quantity)|money }}</p>
-{% endfor %}
-{% set totals = order %}
-{% include '_totals.html' %}
-<p>Discount code: {{ order.discount_code or 'None' }}</p>
-<p>Instructions: {{ order.instructions or 'None' }}</p>
-<p>Order saved. You can refresh this receipt safely.</p>
-<a href="{{ url_for('menu_page') }}">Back to Menu</a>
+<div class="receipt-layout">
+<header class="confirmation">
+<p class="eyebrow">Order saved</p>
+<h1>All set.<br>Thank you.</h1>
+<p>Your demo order is confirmed.<br>Keep this page as your receipt.</p>
+<p class="muted">This is a student demonstration. No payment was taken and no real order will be prepared or delivered.</p>
+<a href="{{ url_for('menu_page') }}">Back to the menu →</a>
+</header>
+<section class="receipt-card" aria-labelledby="receipt-heading">
+<div class="receipt-brand">rendezvous café</div>
+<h2 id="receipt-heading">Order #{{ order.number }}</h2>
+<p class="muted">
+<time datetime="{{ order.timestamp }}">{{ order.timestamp|replace('T', ' · ') }}</time> · {{ order.fulfillment|title }}</p>
+<div class="receipt-items">{% for item in order['items'] %}
+<div>
+<span>{{ item.name }} <small>× {{ item.quantity }}</small>
+</span>
+<span>{{ (item.price * item.quantity)|money }}</span>
+</div>{% endfor %}
+</div>
+{% set totals = order %}{% include '_totals.html' %}
+<dl class="receipt-notes">
+<dt>Discount code</dt>
+<dd>{{ order.discount_code or 'None' }}</dd>
+<dt>Special instructions</dt>
+<dd>{{ order.instructions or 'None' }}</dd>
+</dl>
+<p class="field-hint">Your receipt is saved. Refreshing this page won't place another order.</p>
+<a href="{{ url_for('report_page') }}">View order history →</a>
 </section>
+</div>
 {% endblock %}

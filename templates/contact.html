@@ -1,30 +1,71 @@
-{# Instructions and keyword FAQ assistance work completely offline. #}
 {% extends "base.html" %}
 {% block title %}Help & Contact{% endblock %}
 {% block content %}
-<section>
+<header class="page-heading">
+<div>
+<p class="eyebrow">A hand with your order</p>
 <h1>Help & Contact</h1>
-<h2>Ask an ordering question</h2>
-<form method="post">
+</div>
+<p>From your first coffee to the final total.<br>Here's how ordering works.</p>
+</header>
+<div class="help-layout">
+<section class="faq-section">
+<h2>What would you like to know?</h2>
+<p>Ask about budgets, delivery, stock, discounts, receipts, or instructions. Our keyword-based guide works offline.</p>
+<form class="faq-form" method="post">
 <label for="question">Your question</label>
-<input type="text" id="question" name="question" maxlength="300" value="{{ question }}" placeholder="How does the budget work?">
+<div class="search-form">
+<input type="text" id="question" name="question" maxlength="300" value="{{ question }}" placeholder="How does the budget work?" required>
 <button>Ask</button>
-</form>
-{% if answer %}
-<p role="status">{{ answer }}</p>
-{% endif %}
-<h2>How to use this program</h2>
+</div>
+</form>{% if answer %}
+<div class="faq-answer" role="status">
+<h3>Here's how it works</h3>
+<p>{{ answer }}</p>
+</div>{% endif %}
+<div class="help-topics">
+<details>
+<summary>How much does delivery cost?</summary>
+<p>Pickup is free. Simulated delivery adds $3.99. No real deliveries are dispatched.</p>
+</details>
+<details>
+<summary>Can I use a discount?</summary>
+<p>Enter CAFE10 in Your Order for 10% off the items subtotal, before tax. Delivery is not discounted.</p>
+</details>
+<details>
+<summary>Where can I find an old receipt?</summary>
+<p>Open <a href="{{ url_for('report_page') }}">Sales report & history</a> and select an order number. A receipt can be refreshed without placing another order.</p>
+</details>
+</div>
+</section>
+<aside class="ordering-guide">
+<h2>From menu to receipt</h2>
 <ol>
-<li>Browse Menu; search by name or select Drinks or Food.</li>
-<li>Choose a whole-number quantity up to 10 and available stock, then Add to Cart.</li>
-<li>Open Your Order to update or remove items.</li>
-<li>Select fulfillment, add instructions, optionally enter CAFE10 and a budget, and save settings.</li>
-<li>Review the total and place the order. Save the receipt number.</li>
-<li>Open Sales Report to filter orders by date/category and compare item sales.</li>
+<li>
+<strong>Find your favorites.</strong>
+<p>Search the menu or browse Drinks and Food.</p>
+</li>
+<li>
+<strong>Choose your quantities.</strong>
+<p>Add up to 10 of each item, within available stock.</p>
+</li>
+<li>
+<strong>Make it your order.</strong>
+<p>Update items, choose pickup or simulated delivery, and add any instructions.</p>
+</li>
+<li>
+<strong>Review the total.</strong>
+<p>Add an optional discount or budget, then select Update total.</p>
+</li>
+<li>
+<strong>Place your demo order.</strong>
+<p>Keep the saved receipt or find it in the order history.</p>
+</li>
 </ol>
-<h2>Local Business Digital Ordering System</h2>
-<p>This student project lets cafe customers browse products, manage a cart, calculate costs, stay within a budget, and review saved orders. Inventory checks prevent selling unavailable products. Sales summaries help a local business understand demand.</p>
-<h2>Contact</h2>
-<p>Rendezvous Cafe is a student demonstration set in Cumming, Georgia. Real contact details and a verified pickup address have not been supplied. No real orders are sent.</p>
+</aside>
+</div>
+<section class="contact-note">
+<h2>About this demonstration</h2>
+<p>Rendezvous Cafe is a student project set in Cumming, Georgia. A verified pickup address and real contact details have not been supplied. No real orders are sent. For allergies or dietary needs, contact a real café directly.</p>
 </section>
 {% endblock %}

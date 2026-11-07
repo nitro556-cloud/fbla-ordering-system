@@ -201,6 +201,41 @@ class CafeTests(unittest.TestCase):
         with self.client.session_transaction() as browser:
             self.assertEqual(browser['cart'], {'1': 1})
 
+    def test_category_and_search_combine(self):
+        """Category navigation retains search and filters its matches independently."""
+        response = self.client.get('/menu?category=Drinks&q=coffee')
+        self.assertIn(b'Black Coffee', response.data)
+        self.assertNotIn(b'Blueberry Muffin', response.data)
+        self.assertIn(b'name="category" value="Drinks"', response.data)
+        self.assertIn(b'No items found.', self.client.get('/menu?category=Food&q=coffee').data)
+        self.assertIn(b'Blueberry Muffin', self.client.get('/menu?category=invalid').data)
+        # Legacy search-by-category links still work.
+        self.assertNotIn(b'Blueberry Muffin', self.client.get('/menu?q=Drinks').data)
+
+    def test_add_feedback_and_browsing_context(self):
+        """Additions keep the active menu context and identify what was added."""
+        response = self.client.post('/add-to-cart', data={
+            'item_id': '1', 'quantity': '2', 'category': 'Drinks', 'q': 'latte'})
+        self.assertIn('category=Drinks', response.location)
+        self.assertIn('q=latte', response.location)
+        page = self.client.get(response.location)
+        self.assertIn('Added 2 × Latte to your order.'.encode(), page.data)
+        self.assertIn(b'aria-label="2 items"', page.data)
+        error = self.add('3')
+        self.assertIn(b'class="notice error"', error.data)
+        self.assertIn(b'role="alert"', error.data)
+
+    def test_remove_button_and_empty_checkout(self):
+        """The inline removal action preserves its contract; empty carts hide checkout."""
+        self.add()
+        page = self.client.get('/cart')
+        self.assertIn(b'formaction="/remove-from-cart" formnovalidate', page.data)
+        self.assertIn(b'data-settings-form', page.data)
+        self.client.post('/remove-from-cart', data={'item_id': '1'})
+        empty = self.client.get('/cart')
+        self.assertIn(b'Your cart is empty', empty.data)
+        self.assertNotIn(b'Place demo order', empty.data)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,43 +1,66 @@
-{# Menu cards show prices, available inventory, and quantity forms. #}
 {% extends "base.html" %}
 {% block title %}Menu{% endblock %}
 {% block content %}
-<section>
-<h1 class="page-title">Our Menu</h1>
-<p>Choose 1–10 of each item, within available stock. Review totals in Your Order.</p>
-</section>
-<section>
-<form method="get">
-<label for="search">Search menu</label>
-<input id="search" name="q" value="{{ query }}" type="text">
-<button>Search</button>
-</form>
-<nav aria-label="Menu categories">
-{% for category in ['', 'Drinks', 'Food'] %}
-<a href="{{ url_for('menu_page', q=category) }}">{{ category or 'All Items' }}</a>
-{% endfor %}
+<header class="page-heading">
+<div>
+<p class="eyebrow">The Rendezvous menu</p>
+<h1>Your usual.<br>Or something new.</h1>
+</div>
+<p>Coffee, a quick bite, or a little of both.<br>Choose up to 10 of each item, within available stock.</p>
+</header>
+<div class="menu-tools">
+<nav class="category-tabs" aria-label="Menu categories">{% for value in ['', 'Drinks', 'Food'] %}
+<a href="{{ url_for('menu_page', category=value, q=query) }}" {% if category == value %}aria-current="page"{% endif %}>{{ value or 'All items' }}</a>{% endfor %}
 </nav>
-</section>
-<section class="menu-grid">
-{% for item in menu %}
-<article class="menu-item">
-<img class="menu-item-img" src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}">
-<div class="menu-item-content">
-<h2>{{ item.name }}</h2>
-<p>{{ item.category }} · {{ item.price|money }}</p>
-<p>
-{% if item.stock == 0 %}Sold Out{% else %}Only {{ item.stock }} left{% endif %}
-</p>
-<form action="{{ url_for('add_to_cart') }}" method="post">
-<input type="hidden" name="item_id" value="{{ item.id }}">
-<label for="qty-{{ item.id }}">Quantity</label>
-<input id="qty-{{ item.id }}" name="quantity" type="number" min="1" max="{{ [10, item.stock]|min }}" value="1" required {% if not item.stock %}disabled{% endif %}>
-<button {% if not item.stock %}disabled{% endif %}>Add to Cart</button>
+<form class="search-form" method="get" role="search">
+<label class="sr-only" for="search">Search menu</label>
+<input type="hidden" name="category" value="{{ category }}">
+<input id="search" name="q" value="{{ query }}" type="search" placeholder="Find your coffee or a bite…">
+<button class="secondary">Search</button>
 </form>
 </div>
-</article>
-{% else %}
-<p>No items found. Try another search.</p>
-{% endfor %}
+{% if query %}
+<p class="search-result">{{ menu|length }} result{{ '' if menu|length == 1 else 's' }} for “{{ query }}” <a href="{{ url_for('menu_page', category=category) }}">Clear search</a>
+</p>{% endif %}
+{% for group in menu|groupby('category') %}
+<section class="menu-section" aria-labelledby="category-{{ group.grouper }}">
+<div class="section-heading">
+<h2 id="category-{{ group.grouper }}">{{ group.grouper }}</h2>
+<span>{{ group.list|length }} items</span>
+</div>
+<div class="menu-grid">{% for item in group.list %}
+<article class="menu-item {% if not item.stock %}sold-out{% endif %}">
+<div class="product-photo">
+<img class="menu-item-img" src="{{ url_for('static', filename='images/' ~ item.image) }}" alt="{{ item.name }}" loading="lazy">{% if not item.stock %}
+<span class="stock-overlay">Sold out</span>{% endif %}
+</div>
+<div class="menu-item-content">
+<div class="product-heading">
+<h3>{{ item.name }}</h3>
+<span class="price">{{ item.price|money }}</span>
+</div>
+<p class="stock {% if item.stock <= 5 %}low-stock{% endif %}">{% if not item.stock %}Currently unavailable{% elif item.stock <= 5 %}Only {{ item.stock }} left{% else %}{{ item.stock }} available{% endif %}
+</p>
+<form class="add-form" action="{{ url_for('add_to_cart') }}" method="post">
+<input type="hidden" name="item_id" value="{{ item.id }}">
+<input type="hidden" name="q" value="{{ query }}">
+<input type="hidden" name="category" value="{{ category }}">
+<label class="sr-only" for="qty-{{ item.id }}">Quantity for {{ item.name }}</label>
+<div class="quantity-control">
+<button type="button" data-step="-1" aria-label="Decrease {{ item.name }} quantity" hidden>−</button>
+<input id="qty-{{ item.id }}" name="quantity" aria-label="Quantity for {{ item.name }}" type="number" min="1" max="{{ [10, item.stock]|min if item.stock else 1 }}" value="1" required {% if not item.stock %}disabled{% endif %}>
+<button type="button" data-step="1" aria-label="Increase {{ item.name }} quantity" hidden>+</button>
+</div>
+<button {% if not item.stock %}disabled{% endif %}>{{ 'Sold out' if not item.stock else 'Add to order' }}</button>
+</form>
+</div>
+</article>{% endfor %}
+</div>
 </section>
+{% else %}
+<section class="empty-state">
+<h2>No items found.</h2>
+<p>Try another search or browse the full menu.</p>
+<a class="button" href="{{ url_for('menu_page') }}">View all items</a>
+</section>{% endfor %}
 {% endblock %}

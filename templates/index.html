@@ -1,22 +1,40 @@
-{# Homepage introduces the cafe and links directly to ordering. #}
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}A little time for coffee{% endblock %}
+{% block page_class %}home-page{% endblock %}
 {% block content %}
-    <main>
-        <!-- Hero section -->
-        <section class="hero-section">
-            <div class="section-content">
-                <div class="hero-details">
-                    <h2 class="title">Best Coffee</h2>
-                    <h3 class="subtitle">Make your day great with our special coffee!</h3>
-                    <p class="description">Enjoy some delicious food in a nice atmosphere and some romance with your favorite meal. We invite you to come hungry and leave us satisfied with our delicious menu.</p>
-                    <a href="/menu" class="order-now-btn">Order Now</a>
-                </div>
-                <div class="hero-image-holder">
-                    <img src="{{ url_for('static', filename='./images/hero-image.png') }}" alt="Coffee Image" class="hero-image">
-                </div>
-            </div>
-        </section>
-    </main>
-
+<section class="home-hero">
+<div class="hero-copy">
+<p class="eyebrow">Coffee. A bite. A rendezvous.</p>
+<h1>Make time<br>to <em>meet.</em>
+</h1>
+<p class="hero-description">A coffee for you. Something to share.<br>Find your next café order at Rendezvous.</p>
+<a class="button" href="{{ url_for('menu_page') }}">Explore the menu <span aria-hidden="true">↗</span>
+</a>
+<p class="hero-note">Browse, choose, and make it your order.</p>
+</div>
+<figure class="hero-photo">
+<img src="{{ url_for('static', filename='images/hero-image.png') }}" alt="A cup of coffee on a sunlit green table" fetchpriority="high">
+<figcaption>
+<span>rendezvous café</span>
+<span>A moment at the table.</span>
+</figcaption>
+</figure>
+</section>
+<section class="home-menu">
+<div>
+<p class="eyebrow">At the café</p>
+<h2>What are you<br>in the mood for?</h2>
+<p>Start with a drink, or find a bite to go with it.</p>
+</div>
+<a class="category-preview" href="{{ url_for('menu_page', category='Drinks') }}">
+<img src="{{ url_for('static', filename='images/latte.jpg') }}" alt="Latte" loading="lazy">
+<span>Drinks <span aria-hidden="true">↗</span>
+</span>
+</a>
+<a class="category-preview" href="{{ url_for('menu_page', category='Food') }}">
+<img src="{{ url_for('static', filename='images/croissant.jpg') }}" alt="Croissant" loading="lazy">
+<span>Food <span aria-hidden="true">↗</span>
+</span>
+</a>
+</section>
 {% endblock %}

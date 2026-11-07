@@ -1,10 +1,117 @@
-/* The receipt uses the same card and totals treatment as checkout. */
-body > .receipt-card {
-    max-width: 680px;
-    padding: clamp(24px, 5vw, 40px);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+.receipt-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    max-width: 1040px;
+    margin: auto;
+    padding-top: 24px;
 }
-.receipt-card > p { overflow-wrap: anywhere; }
-.receipt-card > a { display: inline-block; margin-top: 16px; font-weight: 600; }
+
+.confirmation h1 {
+    margin-bottom: 24px;
+}
+
+.confirmation>p:not(.eyebrow) {
+    max-width: 36ch;
+}
+
+.confirmation>p.muted {
+    font-size: .9rem;
+    margin-block: 24px;
+}
+
+.confirmation>a {
+    display: inline-block;
+    margin-top: 16px;
+}
+
+.receipt-card {
+    padding: 36px;
+    background: var(--surface);
+    border-top: 4px solid var(--ink);
+    box-shadow: 0 8px 24px #203e3508;
+}
+
+.receipt-brand {
+    font-family: var(--display);
+    font-size: 1.8rem;
+    letter-spacing: -.06em;
+    font-weight: 700;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.receipt-card>h2 {
+    font-size: 1.7rem;
+    margin-bottom: 8px;
+}
+
+.receipt-card>p.muted {
+    font-size: .8rem;
+}
+
+.receipt-items {
+    padding-block: 12px;
+}
+
+.receipt-items>div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 0;
+    font-size: .9rem;
+}
+
+.receipt-items>div>span:last-child {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.receipt-items small {
+    color: var(--muted);
+    margin-left: 4px;
+}
+
+.receipt-notes {
+    font-size: .85rem;
+}
+
+.receipt-notes dt {
+    color: var(--muted);
+    margin-top: 16px;
+}
+
+.receipt-notes dd {
+    margin: 4px 0 0;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.receipt-card>.field-hint {
+    margin-block: 24px;
+}
+
+.receipt-card>a {
+    font-size: .85rem;
+}
+
+@media(max-width:900px) {
+    .receipt-layout {
+        gap: 36px;
+    }
+    .receipt-card {
+        padding: 24px;
+    }
+}
+
+@media(max-width:640px) {
+    .receipt-layout {
+        grid-template-columns: 1fr;
+        padding-top: 0;
+    }
+    .receipt-card {
+        padding: 24px;
+    }
+}
